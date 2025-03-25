@@ -1,0 +1,203 @@
+# Django Interview Questions and Answers
+https://chatgpt.com/canvas/shared/67d96a6427a881918c194707d3336480
+
+## 1. Django Basics
+
+### Q1: What is Django, and why is it used?
+**Answer:**
+Django is a high-level Python web framework that follows the **Model-View-Template (MVT)** architectural pattern. It is used for rapid development, clean and pragmatic design, and secure web applications. Django simplifies common web development tasks like handling user authentication, database management, and URL routing.
+
+### Q2: How do you create a new Django project?
+**Answer:**
+To create a new Django project, use the following command:
+```bash
+django-admin startproject projectname
+```
+This creates a project folder with essential files such as `manage.py` and a settings module.
+
+## 2. Django ORM
+
+### Q3: What is Django ORM, and how does it work?
+**Answer:**
+Django ORM (Object-Relational Mapping) is an abstraction layer that allows developers to interact with databases using Python instead of raw SQL. It maps database tables to Python classes (models), making it easier to query and manipulate data using high-level Python code.
+
+Example of a Django model:
+```python
+from django.db import models
+class Book(models.Model):
+    title = models.CharField(max_length=100)
+    author = models.CharField(max_length=50)
+    published_date = models.DateField()
+```
+
+To query all books:
+```python
+books = Book.objects.all()
+```
+
+### Q4: How do you filter data using Django ORM?
+**Answer:**
+You can use `filter()` to retrieve specific data based on conditions:
+```python
+books_by_author = Book.objects.filter(author='J.K. Rowling')
+```
+
+## 3. Django Forms & Authentication
+
+### Q5: What are Django Forms, and why are they used?
+**Answer:**
+Django Forms simplify form handling by automating validation, rendering, and processing. They prevent security issues like Cross-Site Request Forgery (CSRF).
+
+Example:
+```python
+from django import forms
+class BookForm(forms.Form):
+    title = forms.CharField(max_length=100)
+    author = forms.CharField(max_length=50)
+```
+
+### Q6: How does Django handle authentication?
+**Answer:**
+Django provides built-in authentication with features like user login, logout, and password management using the `django.contrib.auth` module.
+
+Example:
+```python
+from django.contrib.auth import authenticate, login
+user = authenticate(username='testuser', password='password')
+if user:
+    login(request, user)
+```
+
+## 4. Django Views & Templates
+
+### Q7: What is the difference between function-based views and class-based views?
+**Answer:**
+- **Function-Based Views (FBV)**: Simple and easy to understand, but can become complex with added logic.
+- **Class-Based Views (CBV)**: Reusable, structured, and extendable using built-in Django classes like `ListView`, `DetailView`.
+
+Example:
+```python
+from django.views import View
+from django.http import HttpResponse
+class HelloView(View):
+    def get(self, request):
+        return HttpResponse("Hello, World!")
+```
+
+## 5. Django REST Framework (DRF)
+
+### Q8: How do you create an API endpoint in Django REST Framework?
+**Answer:**
+Using DRF, we define a serializer and view:
+
+**Serializer:**
+```python
+from rest_framework import serializers
+from .models import Book
+class BookSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Book
+        fields = '__all__'
+```
+
+**View:**
+```python
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from .models import Book
+from .serializers import BookSerializer
+class BookListView(APIView):
+    def get(self, request):
+        books = Book.objects.all()
+        serializer = BookSerializer(books, many=True)
+        return Response(serializer.data)
+```
+
+### Q9: How do you implement filtering in DRF?
+**Answer:**
+DRF provides several filtering methods:
+- **Basic filtering:**
+```python
+books = Book.objects.filter(author='J.K. Rowling')
+```
+- **DjangoFilterBackend:**
+```python
+from django_filters.rest_framework import DjangoFilterBackend
+class BookViewSet(viewsets.ModelViewSet):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['author', 'published_date']
+```
+
+### Q10: How does pagination work in DRF?
+**Answer:**
+Pagination is used to limit the number of results per API request. DRF supports:
+
+**Example using PageNumberPagination:**
+```python
+from rest_framework.pagination import PageNumberPagination
+class CustomPagination(PageNumberPagination):
+    page_size = 10
+```
+
+To enable pagination:
+```python
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'path.to.CustomPagination',
+    'PAGE_SIZE': 10,
+}
+```
+
+### Q11: What is rate limiting, and how is it implemented in DRF?
+**Answer:**
+Rate limiting prevents abuse by restricting the number of API requests per user.
+
+Example:
+```python
+from rest_framework.throttling import UserRateThrottle
+class CustomThrottle(UserRateThrottle):
+    rate = '5/min'
+```
+In `settings.py`:
+```python
+REST_FRAMEWORK = {
+    'DEFAULT_THROTTLE_CLASSES': ['rest_framework.throttling.UserRateThrottle'],
+    'DEFAULT_THROTTLE_RATES': {'user': '5/min'},
+}
+```
+
+## 6. Deployment & Performance
+
+### Q12: How do you serve static and media files in production?
+**Answer:**
+Using Nginx and Gunicorn for deployment:
+```nginx
+location /static/ {
+    alias /path/to/static/files;
+}
+location /media/ {
+    alias /path/to/media/files;
+}
+```
+
+## 7. Advanced Concepts
+
+### Q13: What are Django signals, and how do you use them?
+**Answer:**
+Django signals allow decoupled components to respond to events.
+
+Example:
+```python
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from .models import UserProfile
+@receiver(post_save, sender=UserProfile)
+def user_created(sender, instance, created, **kwargs):
+    if created:
+        print("New user profile created!")
+```
+
+---
+This document covers **Django basics to advanced topics** with **interview-style questions and answers** to help you prepare effectively.
+
