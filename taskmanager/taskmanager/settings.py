@@ -92,26 +92,29 @@ WSGI_APPLICATION = "taskmanager.wsgi.application"
 # del db.sqlite3  # Windows
 
 #Postgres DataBase
+import os
+#Using Environmen Variables
 # DATABASES = {
 #     "default": {
 #         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": "",  # database name
-#         "USER": "",  # PostgreSQL username
-#         "PASSWORD": "",  # PostgreSQL password
-#         "HOST": "",
-#         "PORT": "",
+#         "NAME": os.getenv("DB_NAME"),        
+#         "USER": os.getenv("DB_USER"),        
+#         "PASSWORD": os.getenv("DB_PASSWORD"), 
+#         "HOST": os.getenv("DB_HOST"),        
+#         "PORT": os.getenv("DB_PORT"),        
 #     }
 # }
-import os
 
+
+from decouple import config
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("DB_NAME"),        
-        "USER": os.getenv("DB_USER"),        
-        "PASSWORD": os.getenv("DB_PASSWORD"), 
-        "HOST": os.getenv("DB_HOST"),        
-        "PORT": os.getenv("DB_PORT"),        
+        "NAME": config("DB_NAME"),        
+        "USER": config("DB_USER"),        
+        "PASSWORD": config("DB_PASSWORD"), 
+        "HOST": config("DB_HOST", default="localhost"),        
+        "PORT": config("DB_PORT", cast=int, default="5432"),        
     }
 }
 
