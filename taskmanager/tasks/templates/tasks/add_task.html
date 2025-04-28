@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Add New Task</h2>
+
+    <!-- Display messages -->
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="form-container">
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_title">Task Title</label>
+                {{ form.title }}
+            </div>
+            <div class="form-group">
+                <label for="id_description">Description</label>
+                {{ form.description }}
+            </div>
+            <div class="form-group">
+                <label for="id_start_date">Start Date</label>
+                {{ form.start_date }}
+            </div>
+            <div class="form-group">
+                <label for="id_end_date">End Date</label>
+                {{ form.end_date  }}
+            </div>
+            <div class="form-group">
+                <label for="id_completed">Mark as Completed</label>
+                {{ form.completed }}
+            </div>
+            <button type="submit" class="btn btn-primary">Add Task</button>
+            <a href="{% url 'task-list' %}" class="btn btn-secondary">Back to Task List</a>
+        </form>
+    </div>
+</div>
+
+<style>
+    .container {
+        max-width: 500px;
+        margin: auto;
+        padding: 20px;
+        border-radius: 10px;
+        background: #f9f9f9;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+    .form-group {
+        margin-bottom: 15px;
+    }
+    label {
+        display: block;
+        font-weight: bold;
+    }
+    input[type="text"], input[type="checkbox"] {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+    .btn {
+        padding: 8px 12px;
+        border-radius: 5px;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .btn-primary {
+        background: rgb(131, 131, 212);
+        color: white;
+        border: none;
+    }
+    .btn-secondary {
+        background: gray;
+        color: white;
+        margin-left: 10px;
+    }
+    .messages {
+        margin-bottom: 15px;
+    }
+    .alert {
+        padding: 10px;
+        border-radius: 5px;
+    }
+    .alert-success {
+        background: lightgreen;
+        color: green;
+    }
+</style>
+
+{% endblock %}
