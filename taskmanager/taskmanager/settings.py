@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'django_filters',
+    'django_extensions', #for showing all the urls python manage.py show_urls 
     # Our new app
     "tasks",
 ]
@@ -118,7 +119,7 @@ DATABASES = {
     }
 }
 
-# Step 5: Backup Your PostgreSQL Database
+# Step 5: Backup Your PostggitreSQL Database
 # It's always good to take a backup of your PostgreSQL database.
 
 # pg_dump -U your_db_user -F c -b -v -f backup.dump your_db_name
