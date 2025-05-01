@@ -1,0 +1,53 @@
+services:
+  db:
+    image: postgres:15
+    container_name: db
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+      
+  fastapi_auth_service:
+    build:
+      context: ./fastapi_auth_service
+    container_name: fastapi_auth
+    env_file:
+      - ./fastapi_auth_service/.env
+    ports:
+      - "8001:8000"
+    depends_on:
+      - db
+    command: >
+        sh -c "./wait-for-it.sh db &&
+         uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+
+  taskmanager:
+    build:
+      context: ./taskmanager
+    container_name: django_taskmanager
+    env_file:
+      - ./taskmanager/.env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    command: >
+      sh -c "
+      ./wait-for-it.sh db &&
+      python manage.py migrate &&
+      gunicorn taskmanager.wsgi:application --bind 0.0.0.0:8000"
+
+volumes:
+  postgres_data:
