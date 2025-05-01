@@ -8,12 +8,12 @@ FROM python:3.10-slim
 WORKDIR /app
 # This is where all commands will be run inside the container (like cd /app).
 
+# Install dependencies
+RUN apt-get update && apt-get install -y netcat-openbsd
+
 # 3️⃣ Copy requirements.txt into container
 COPY requirements.txt ./
 # We first copy only the requirements to take advantage of Docker layer caching.
-
-# Install dependencies
-RUN apt-get update && apt-get install -y netcat-openbsd
 
 # 4️⃣ Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
