@@ -22,7 +22,7 @@ services:
   fastapi_auth_service:
     build:
       context: ./fastapi_auth_service
-    container_name: fastapi_auth
+    container_name: fastapi_auth_service
     env_file:
       - ./fastapi_auth_service/.env
     ports:
