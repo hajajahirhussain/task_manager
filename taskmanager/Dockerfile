@@ -20,8 +20,8 @@ COPY . .
 RUN python manage.py collectstatic --noinput
 
 # 6. Environment variables (optional optimizations)
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
 # 7. Expose port 8000 for the app
 EXPOSE 8000
