@@ -3,8 +3,9 @@ import datetime
 import os
 from fastapi import HTTPException, Depends
 from fastapi.security import OAuth2PasswordBearer
+from decouple import config
 
-SECRET_KEY = "your_secret_key"  # Change this in production
+SECRET_KEY = config("JWT_SECRET_KEY") # fallback optional
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
