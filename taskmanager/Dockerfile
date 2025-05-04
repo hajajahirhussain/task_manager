@@ -17,7 +17,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # 6. Collect static files (prepare for future static use with whitenoise)
-RUN python manage.py collectstatic --noinput
+# RUN python manage.py collectstatic --noinput
+COPY wait-for-it.sh entrypoint.sh ./
+RUN chmod +x wait-for-it.sh entrypoint.sh
+
+ENTRYPOINT ["./entrypoint.sh"]
+
 
 # 7. Set Django & Python runtime environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -26,5 +31,5 @@ ENV PYTHONUNBUFFERED=1
 # 8. Expose port
 EXPOSE 8000
 
-# 9. Start Django with Gunicorn
-CMD ["gunicorn", "taskmanager.wsgi:application", "--bind", "0.0.0.0:8000"]
+# 9. Start Django with Gunicorn (handled in entrypoint.sh)
+# CMD ["gunicorn", "taskmanager.wsgi:application", "--bind", "0.0.0.0:8000"]
